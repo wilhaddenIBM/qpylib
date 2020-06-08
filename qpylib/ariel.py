@@ -59,7 +59,6 @@ class ArielSearches():
             if self.auth_token:
                 headers['SEC'] = self.auth_token
             elif request:
-                sec = self.__acquire_sec_token()
                 headers['SEC'] = self.__acquire_sec_token()
             else:
                 raise ArielSearchError(None, "Unable to aquire any SEC token")
@@ -85,7 +84,8 @@ class ArielSearches():
             self.logger.debug("RESPONSE (status_code={%d}): {%s}",
                               response.status_code, response.text)
         if response.status_code != 201:
-            self.logger.error(str(response.status_code) + " Failed to start Ariel search with query expression {%s}: {%s}",
+            self.logger.error(str(response.status_code) +
+                              " Failed to start Ariel search with query expression {%s}: {%s}",
                               query, response.text)
             try:
                 response_json = response.json()
