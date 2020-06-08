@@ -137,7 +137,7 @@ def test_simple_query(env_qradar_console_fqdn):
                    'fields=status%2Crecord_count'),
                   json=ret_obj, status=200)
 
-    result = {} 
+    result = {}
     result['username'] = "admin"
     result['COUNT'] = "1"
     results = {}
@@ -175,7 +175,7 @@ def test_end_after_start_fails(env_qradar_console_fqdn):
                    'fields=status%2Crecord_count'),
                   json=ret_obj, status=200)
 
-    result = {} 
+    result = {}
     result['username'] = "admin"
     result['COUNT'] = "1"
     results = {}
@@ -208,7 +208,7 @@ def test_status_failed_fails(env_qradar_console_fqdn):
                    'fields=status%2Crecord_count'),
                   json=ret_obj, status=200)
 
-    result = {} 
+    result = {}
     result['username'] = "admin"
     result['COUNT'] = "1"
     results = {}
