@@ -84,9 +84,8 @@ class ArielSearches():
             self.logger.debug("RESPONSE (status_code={%d}): {%s}",
                               response.status_code, response.text)
         if response.status_code != 201:
-            self.logger.error(str(response.status_code) +
-                              " Failed to start Ariel search with query expression {%s}: {%s}",
-                              query, response.text)
+            self.logger.error(" Failed to start Ariel search with query expression {%s}: {%s} %{d}",
+                              query, response.text, response.status_code)
             try:
                 response_json = response.json()
                 message = response_json["message"] if "message" in response_json else response.text

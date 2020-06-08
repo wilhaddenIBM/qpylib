@@ -27,7 +27,7 @@ def test_fails_when_no_sec_token_supplied(env_qradar_console_fqdn):
                   json={'success': True}, status=200)
     ariel = ArielSearches()
     with pytest.raises(ArielSearchError, match='Unable to aquire any SEC token'):
-        cursor_id = ariel.search_s('', 300)
+        ariel.search_s('', 5)
 
 @responses.activate
 def test_search_failure(env_qradar_console_fqdn):
@@ -42,7 +42,9 @@ def test_search_failure(env_qradar_console_fqdn):
     ret_obj['status'] = 'COMPLETED'
     ret_obj['record_count'] = '1'
     responses.add('GET',
-                  'https://myhost.ibm.com/api/ariel/searches/fa7a12c4-a3a7-425a-82b3-67d42c33860c?fields=status%2Crecord_count',
+                  ('https://myhost.ibm.com/api/ariel/searches/'
+                   'fa7a12c4-a3a7-425a-82b3-67d42c33860c?'
+                   'fields=status%2Crecord_count'),
                   json=ret_obj, status=400)
 
     ariel = ArielSearches("l_o_n_g_w_a_v_e")
@@ -62,7 +64,9 @@ def test_timeout_query(env_qradar_console_fqdn):
     ret_obj['status'] = 'TOOT'
     ret_obj['record_count'] = '1'
     responses.add('GET',
-                  'https://myhost.ibm.com/api/ariel/searches/fa7a12c4-a3a7-425a-82b3-67d42c33860c?fields=status%2Crecord_count',
+                  ('https://myhost.ibm.com/api/ariel/searches/'
+                   'fa7a12c4-a3a7-425a-82b3-67d42c33860c?'
+                   'fields=status%2Crecord_count'),
                   json=ret_obj, status=200)
 
     ariel = ArielSearches("l_o_n_g_w_a_v_e")
@@ -82,7 +86,9 @@ def test_errored_query(env_qradar_console_fqdn):
     ret_obj['status'] = 'ERROR'
     ret_obj['record_count'] = '1'
     responses.add('GET',
-                  'https://myhost.ibm.com/api/ariel/searches/fa7a12c4-a3a7-425a-82b3-67d42c33860c?fields=status%2Crecord_count',
+                  ('https://myhost.ibm.com/api/ariel/searches/'
+                   'fa7a12c4-a3a7-425a-82b3-67d42c33860c?'
+                   'fields=status%2Crecord_count'),
                   json=ret_obj, status=200)
 
     ariel = ArielSearches("l_o_n_g_w_a_v_e")
@@ -102,7 +108,9 @@ def test_cancelled_query(env_qradar_console_fqdn):
     ret_obj['status'] = 'CANCELED'
     ret_obj['record_count'] = '1'
     responses.add('GET',
-                  'https://myhost.ibm.com/api/ariel/searches/fa7a12c4-a3a7-425a-82b3-67d42c33860c?fields=status%2Crecord_count',
+                  ('https://myhost.ibm.com/api/ariel/searches/'
+                   'fa7a12c4-a3a7-425a-82b3-67d42c33860c?'
+                   'fields=status%2Crecord_count'),
                   json=ret_obj, status=200)
 
 
@@ -124,7 +132,9 @@ def test_simple_query(env_qradar_console_fqdn):
     ret_obj['status'] = 'COMPLETED'
     ret_obj['record_count'] = '1'
     responses.add('GET',
-                  'https://myhost.ibm.com/api/ariel/searches/fa7a12c4-a3a7-425a-82b3-67d42c33860c?fields=status%2Crecord_count',
+                  ('https://myhost.ibm.com/api/ariel/searches/'
+                   'fa7a12c4-a3a7-425a-82b3-67d42c33860c?'
+                   'fields=status%2Crecord_count'),
                   json=ret_obj, status=200)
 
     result = {} 
@@ -133,14 +143,15 @@ def test_simple_query(env_qradar_console_fqdn):
     results = {}
     results['events'] = [result]
     responses.add('GET',
-                   'https://myhost.ibm.com/api/ariel/searches/fa7a12c4-a3a7-425a-82b3-67d42c33860c/results',
-                   json=results, status=200)
+                  ('https://myhost.ibm.com/api/ariel/searches/'
+                   'fa7a12c4-a3a7-425a-82b3-67d42c33860c/results'),
+                  json=results, status=200)
 
     ariel = ArielSearches("l_o_n_g_w_a_v_e")
-    cursor_id = ariel.search_s(login_count_query, 300)
+    cursor_id = ariel.search_s(login_count_query, 5)
     login_response = ariel.results(cursor_id[0])['events']
 
-    print (str(login_response) ,file=open("/tmp/output.txt", "w"))
+    print(str(login_response), file=open("/tmp/output.txt", "w"))
     for obj in login_response:
         assert obj['username'] == "admin"
         assert obj['COUNT'] == "1"
@@ -159,7 +170,9 @@ def test_end_after_start_fails(env_qradar_console_fqdn):
     ret_obj['status'] = 'COMPLETED'
     ret_obj['record_count'] = '1'
     responses.add('GET',
-                  'https://myhost.ibm.com/api/ariel/searches/fa7a12c4-a3a7-425a-82b3-67d42c33860c?fields=status%2Crecord_count',
+                  ('https://myhost.ibm.com/api/ariel/searches/'
+                   'fa7a12c4-a3a7-425a-82b3-67d42c33860c?'
+                   'fields=status%2Crecord_count'),
                   json=ret_obj, status=200)
 
     result = {} 
@@ -172,7 +185,7 @@ def test_end_after_start_fails(env_qradar_console_fqdn):
                   json=results, status=200)
 
     ariel = ArielSearches("l_o_n_g_w_a_v_e")
-    cursor_id = ariel.search_s(login_count_query, 300)
+    cursor_id = ariel.search_s(login_count_query, 5)
     with pytest.raises(ValueError, match='Invalid range; the results are indexed starting at zero'):
         ariel.results(cursor_id[0], start=1)
 
@@ -190,7 +203,9 @@ def test_status_failed_fails(env_qradar_console_fqdn):
     ret_obj['status'] = 'COMPLETED'
     ret_obj['record_count'] = '1'
     responses.add('GET',
-                  'https://myhost.ibm.com/api/ariel/searches/fa7a12c4-a3a7-425a-82b3-67d42c33860c?fields=status%2Crecord_count',
+                  ('https://myhost.ibm.com/api/ariel/searches/'
+                   'fa7a12c4-a3a7-425a-82b3-67d42c33860c?'
+                   'fields=status%2Crecord_count'),
                   json=ret_obj, status=200)
 
     result = {} 
@@ -203,5 +218,6 @@ def test_status_failed_fails(env_qradar_console_fqdn):
                   json=results, status=300)
 
     ariel = ArielSearches("l_o_n_g_w_a_v_e")
+    cursor_id = ariel.search_s(login_count_query, 5)
     with pytest.raises(ArielSearchError, match='failed'):
         ariel.results(cursor_id[0], end=1)
